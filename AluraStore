@@ -1,0 +1,210 @@
+import pandas as pd
+
+url = "https://raw.githubusercontent.com/alura-es-cursos/challenge1-data-science/refs/heads/main/base-de-dados-challenge-1/loja_1.csv"
+url2 = "https://raw.githubusercontent.com/alura-es-cursos/challenge1-data-science/refs/heads/main/base-de-dados-challenge-1/loja_2.csv"
+url3 = "https://raw.githubusercontent.com/alura-es-cursos/challenge1-data-science/refs/heads/main/base-de-dados-challenge-1/loja_3.csv"
+url4 = "https://raw.githubusercontent.com/alura-es-cursos/challenge1-data-science/refs/heads/main/base-de-dados-challenge-1/loja_4.csv"
+
+loja = pd.read_csv(url)
+loja2 = pd.read_csv(url2)
+loja3 = pd.read_csv(url3)
+loja4 = pd.read_csv(url4)
+
+loja.head()
+
+#faturamento das lojas
+
+faturamento_loja1 = loja['Preço'].sum()
+faturamento_loja2 = loja2['Preço'].sum()
+faturamento_loja3 = loja3['Preço'].sum()
+faturamento_loja4 = loja4['Preço'].sum()
+
+print(f"Faturamento total da Loja 1: R${faturamento_loja1:.2f}")
+print(f"Faturamento total da Loja 2: R${faturamento_loja2:.2f}")
+print(f"Faturamento total da Loja 3: R${faturamento_loja3:.2f}")
+print(f"Faturamento total da Loja 4: R${faturamento_loja4:.2f}")
+print(f"\nFaturamento total das 4 Lojas: R${faturamento_loja1 + faturamento_loja2 + faturamento_loja3 + faturamento_loja4:.2f}")
+
+#Fretes das lojas
+
+fretes_loja1 = loja['Frete'].sum()
+fretes_loja2 = loja2['Frete'].sum()
+fretes_loja3 = loja3['Frete'].sum()
+fretes_loja4 = loja4['Frete'].sum()
+
+print(f'Fretes da Loja 1: R${fretes_loja1:.2f}')
+print(f'Fretes da Loja 2: R${fretes_loja2:.2f}')
+print(f'Fretes da Loja 3: R${fretes_loja3:.2f}')
+print(f'Fretes da Loja 4: R${fretes_loja4:.2f}')
+print(f'\nFretes totais das 4 Lojas: R${fretes_loja1 + fretes_loja2 + fretes_loja3 + fretes_loja4:.2f}')
+
+#quanidade de produto vendido loja 1
+categoria_loja1 = (loja['Categoria do Produto'].value_counts())
+categoria_loja2 = (loja2['Categoria do Produto'].value_counts())
+categoria_loja3 = (loja3['Categoria do Produto'].value_counts())
+categoria_loja4 = (loja4['Categoria do Produto'].value_counts())
+
+print(f'\nLOJA1 {categoria_loja1}')
+print(f'\nLOJA2 {categoria_loja2}')
+print(f'\nLOJA3 {categoria_loja3}')
+print(f'\nLOJA4 {categoria_loja4}')
+
+#mostrando as categoria mais populares de cada loja e quantidades vendidas
+
+print("\nCategorias mais populares e quantidades vendidas por loja:")
+
+print("\nLoja 1:")
+print(categoria_loja1.head(1)) # Mostra apenas a categoria mais popular
+
+print("\nLoja 2:")
+print(categoria_loja2.head(1))
+
+print("\nLoja 3:")
+print(categoria_loja3.head(1))
+
+print("\nLoja 4:")
+print(categoria_loja4.head(1))
+
+#Média de Avaliação das Lojas
+
+media_lojas = [loja, loja2, loja3, loja4]
+
+for i, loja in enumerate(media_lojas, start = 1):
+  media_avaliacao = loja['Avaliação da compra'].mean()
+  print(f'Média de avaliação da loja {i}: {media_avaliacao:.2f}')
+
+  import matplotlib.pyplot as plt
+
+faturamento_total = faturamento_loja1 + faturamento_loja2 + faturamento_loja3 + faturamento_loja4
+faturamentos = [faturamento_loja1, faturamento_loja2, faturamento_loja3, faturamento_loja4]
+lojas = ['Loja 1', 'Loja 2', 'Loja 3', 'Loja 4']
+
+plt.figure(figsize=(8, 8))
+plt.pie(faturamentos, labels=lojas, autopct='%1.1f%%', startangle=140)
+plt.title('Distribuição do Faturamento entre as Lojas')
+plt.axis('equal') # Garante que o gráfico de pizza seja um círculo
+plt.show()
+
+#Produtos mais e menos vendidos
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+lojas = {'Loja 1': loja, 'Loja 2': loja2, 'Loja 3': loja3, 'Loja 4': loja4}
+
+for nome_loja, df_loja in lojas.items():
+  vendas_por_produto = df_loja['Produto'].value_counts()
+  produto_mais_vendido = vendas_por_produto.index[0]
+  produto_menos_vendido = vendas_por_produto.index[-1]
+
+  print(f"\n--- {nome_loja} ---")
+  print(f"Produto mais vendido: {produto_mais_vendido} ({vendas_por_produto.iloc[0]} unidades)")
+  print(f"Produto menos vendido: {produto_menos_vendido} ({vendas_por_produto.iloc[-1]} unidades)")
+
+  # Visualização dos produtos mais vendidos
+  plt.figure(figsize=(10, 6))
+  vendas_por_produto.head(10).plot(kind='bar')
+  plt.title(f'Top 10 Produtos Mais Vendidos - {nome_loja}')
+  plt.xlabel('Produto')
+  plt.ylabel('Quantidade Vendida')
+  plt.xticks(rotation=45, ha='right')
+  plt.tight_layout()
+  plt.show()
+
+  # Visualização dos produtos menos vendidos (opcional, pode ser muitos)
+  # Para uma visualização mais clara, podemos mostrar os 10 menos vendidos
+  if len(vendas_por_produto) > 10:
+    plt.figure(figsize=(10, 6))
+    vendas_por_produto.tail(10).plot(kind='bar')
+    plt.title(f'Top 10 Produtos Menos Vendidos - {nome_loja}')
+    plt.xlabel('Produto')
+    plt.ylabel('Quantidade Vendida')
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
+    plt.show()
+
+#Frete médio das lojas
+
+print("\nMédia de frete por loja:")
+for i, df_loja in enumerate([loja, loja2, loja3, loja4], start=1):
+    media_frete = df_loja['Frete'].mean()
+    print(f'Média de frete da loja {i}: R${media_frete:.2f}')
+
+# Calculando a média de frete para cada loja
+media_frete_loja1 = loja['Frete'].mean()
+media_frete_loja2 = loja2['Frete'].mean()
+media_frete_loja3 = loja3['Frete'].mean()
+media_frete_loja4 = loja4['Frete'].mean()
+
+medias_frete = [media_frete_loja1, media_frete_loja2, media_frete_loja3, media_frete_loja4]
+lojas_nomes = ['Loja 1', 'Loja 2', 'Loja 3', 'Loja 4']
+
+plt.figure(figsize=(10, 6))
+plt.plot(lojas_nomes, medias_frete, marker='o', linestyle='-')
+plt.title('Média de Frete por Loja')
+plt.xlabel('Loja')
+plt.ylabel('Média de Frete (R$)')
+plt.grid(True)
+plt.show()
+
+
+'''
+Relatório Final — Análise de Desempenho das Lojas da AluraStore
+Introdução
+Este relatório tem como objetivo analisar o desempenho das quatro lojas da AluraStore — loja1, loja2, loja3 e loja4 — para recomendar ao Senhor João qual loja deve ser vendida. A análise abrange os seguintes pontos:
+
+Faturamento total
+Categorias mais e menos vendidas
+Avaliação média dos clientes
+Produtos mais e menos vendidos
+Frete médio
+As conclusões foram baseadas em dados extraídos e tratados no Google Colab.
+
+Desenvolvimento
+1. Faturamento Total
+loja1 apresentou o maior faturamento total, sendo a mais lucrativa entre todas.
+loja4 teve faturamento próximo, demonstrando bom desempenho.
+loja2 ficou em posição intermediária.
+loja3 teve o menor faturamento, indicando fraca performance de vendas.
+
+2. Categorias Mais e Menos Vendidas
+loja1 tem boa variedade de categorias com vendas equilibradas.
+loja4 também apresenta um portfólio diversificado e com alto giro.
+loja2 foca em categorias específicas, com desempenho moderado.
+loja3 tem baixa variedade de categorias e fraco volume de vendas, o que prejudica sua atratividade.
+
+3. Avaliação Média dos Clientes
+loja4 lidera com a melhor média de avaliação dos clientes.
+loja2 também obteve avaliações positivas.
+loja1 apresenta avaliação razoável.
+loja3 tem a pior média de avaliação, o que pode ser reflexo de problemas com entrega, produto ou atendimento.
+
+4. Produtos Mais e Menos Vendidos
+loja1 e loja4 concentram os produtos mais vendidos e com melhor desempenho.
+loja2 possui alguns produtos com bom giro.
+loja3 apresenta muitos produtos com baixo volume de vendas ou nenhuma saída, o que contribui para o mau desempenho geral.
+
+5. Frete Médio
+loja4 oferece o menor frete médio, contribuindo para sua boa avaliação.
+loja2 também tem frete competitivo.
+loja1 fica com um valor intermediário.
+loja3 tem o frete mais caro, o que pode afastar clientes e impactar negativamente as vendas.
+
+Conclusão
+Com base na análise dos dados, a loja recomendada para ser vendida é a loja3.
+
+Motivos principais:
+
+Menor faturamento entre todas as lojas
+Pior média de avaliação dos clientes
+Maior custo de frete
+Baixa variedade e desempenho de produtos
+Estoque com baixo giro
+Por outro lado:
+
+loja1 é a mais lucrativa e bem posicionada no mercado.
+loja4 combina boa performance de vendas, excelente avaliação e logística eficiente.
+loja2 é estável, bem avaliada e com espaço para crescimento.
+Portanto, vender a loja3 é a decisão mais estratégica, permitindo ao Senhor João manter as lojas mais promissoras e lucrativas.
+'''
+
